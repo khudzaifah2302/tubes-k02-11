@@ -225,6 +225,24 @@ begin
 			end else		
 end;
 
+procedure tulisMenu;
+begin
+	writeln('> menu:');
+	writeln;
+	writeln('> 1. Lihat Rekening ');
+	writeln('> 2. Informasi Saldo ');
+	writeln('> 3. Lihat Aktivitas Transaksi ');
+	writeln('> 4. Pembuatan Rekening Baru');
+	writeln('> 5. Setoran ');
+	writeln('> 6. Penarikan ');
+	writeln('> 7. Transfer ');
+	writeln('> 8. Pembayaran ');
+	writeln('> 9. Pembelian ');
+	writeln('> 10. Penutupan Rekening ');
+	writeln('> 11. Perubahan Data Rekening ');
+	writeln('> 12. Penambahan/perubahan rekening AutoDebet ');
+	writeln('> 13. exit ');
+end;
 	
 procedure load(var ln : listNasabah; lr : listRekening; ls : listSetoran; lt : listTransfer; lbyr : listPembayaran; lbeli : listPembelian; lnt : listNilaiTukar);
 var
@@ -401,6 +419,60 @@ begin
 				end;
 		end;
 	end;
+end;
+
+Procedure login(arrayN : ListNasabah; var NoNasabah : string); //Login(ListNasabah.Nasabah,currentLocation)
+var i,Loc: integer; //Loc adalah lokasi account pada array, dan i adalah variable untuk menghitung keatas
+	Found: boolean; //Found menentukan apakah account tersebut ada dan login benar atau tidak
+	Att: array [1..100] of integer; //Att menyimpan akun mana yang telah gagal login
+	User, Pass: string;
+Begin
+	for i:=1 to 100 do //semua account di-set dengan 0 pelanggaran atau gagal login 
+	Att[i]:=0;
+	repeat //proses login diulang sampai berhasil
+	Begin
+		Found:= False; //
+		i:=1; //
+		Loc:= 0; //semua variabel diset dalam posisi salah
+		while ((i <= ArrayN.Neff) and (Loc = 0)) do //pencarian akan berhenti saat i melewati data terakhir dalam array, atau lokasi ditemukan
+		Begin
+			write('> Username: ');
+			readln(user);
+			write('> Password: ');
+			readln(pass);
+			if (ArrayN.nasabah[i].Username = User)then //saat username ditemukan
+				Begin
+					Loc:=i; //lokasi di-set
+					if (ArrayN.nasabah[i].Password = pass) then
+						if (ArrayN.nasabah[Loc].Status='tidak aktif') then 
+						begin
+						Found :=false;
+						end else
+						Found:=True; //jika password benar maka login benar	
+				end;
+			i:=i+1; //i naik 1 setiap sebuah lokasi di array selesai dicari
+		end;
+		if (ArrayN.nasabah[Loc].Status='tidak aktif') then 
+		begin
+			writeln('> Akun anda sudah tidak aktif');
+		end else
+		if ((Loc>0) and not(Found)) then //jika username ada dan password salah
+		Begin
+			Writeln('> Password anda salah');
+			Att[Loc]:=Att[Loc]+1; //username itu mendapat peringatan
+			if Att[Loc]=3 then //jika peringatan =3
+			begin
+				ArrayN.nasabah[Loc].Status:='tidak aktif'; //akun di-set tidak aktif
+				writeln('> Akun anda sudah tidak aktif lagi karena telah salah memasukkan password sebanyak 3 kali!');
+			end;
+		end;
+
+		if Loc=0 then //jika username tidak ditemukan
+			writeln('Username tidak ditemukan');
+	end;
+	until ((Loc>0) and (Found)); //kondisi berhenti untuk repeat
+	Writeln('> Login berhasil!');
+	NoNasabah:=arrayN.nasabah[Loc].NomorNasabah; //value fungsi login sama dengan lokasi user pada array, dan selanjutnya dapat disimpan di currentLocation
 end;
 
 Procedure lihatRekening(noNasabah:string; X : listRekening);
@@ -1047,6 +1119,50 @@ begin
 	close(fnt);
 end;
 
+Procedure penarikan(NNasabah:string; var lRek:listRekening; lSet:listSetoran );
+var
+	i,Loc : Integer;
+	tarik : real;
+	jenisrek, noAkun : string;
+Begin
+	Loc:=0;
+	repeat
+	Begin
+		lihatRekening(NNasabah, lRek);
+		repeat
+		write('> Masukkan no Akun: ');
+		readln(noAkun);
+		for i:=1 to 100 do
+		begin
+			if ((NNasabah = lRek.Rekening[i].NomorNasabah) and (noAkun = lRek.Rekening[i].nomorAkun)) then
+				Loc:=i;
+		end;
+		if Loc=0 then writeln('> Rekening tidak ada')
+		until (Loc >0);
+		if (not(JatuhTempo(lRek.Rekening[Loc])) and (lRek.Rekening[Loc].jenisRek<>'tabungan mandiri')) then //JatuhTempo parameternya mungkin belom bener
+			Begin
+				writeln('> Rekening belum jatuh tempo');
+				i:=0;
+			end;
+	end;
+	until (i>0);
+	write('> Jumlah penarikan: ',lRek.Rekening[Loc].mataUang,' '); //contoh hasil penulisan Jumlah penarikan: USD xx
+	readln(tarik);
+	if (tarik > lRek.Rekening[Loc].saldo) then
+		writeln('> Saldo tidak cukup')
+	else begin
+			lRek.Rekening[Loc].saldo := lRek.Rekening[Loc].saldo - tarik;
+			writeln('> Penarikan uang berhasil');
+			lSet.setoran[lSet.Neff+1].nomorAkun := noAkun;
+			lSet.setoran[lSet.Neff+1].jenisTransaksi := 'penarikan';
+			lSet.setoran[lSet.Neff+1].mataUang := lRek.rekening[Loc].mataUang;
+			lSet.setoran[lSet.Neff+1].jumlah := tarik;
+			lSet.setoran[lSet.Neff+1].saldo := lRek.Rekening[Loc].saldo;
+			lSet.setoran[lSet.Neff+1].tanggalTransaksi := DateToStr(Date);
+			lSet.Neff := lSet.Neff +1;
+		end;
+end;
+
 Procedure TransferUang(User:string; var lRekening : ListRekening);
 var	
 	Jenis,bankLuar,Tujuan,uangPenerima : string;
@@ -1159,4 +1275,5 @@ end;
 {program utama}
 begin
 	menu; 
+	login(lNasabah,NoNasabah);
 end.
