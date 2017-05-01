@@ -68,6 +68,11 @@ type
 		password : string;
 		status : string;
 	end;
+	voucher = record
+		jenisBarang 	: string;
+		penyedia 	: string;
+		harga		: real;
+	end;
 	listNasabah = record
 		nasabah : array [1..100] of nasabah;
 		neff : integer;
@@ -95,6 +100,10 @@ type
 	listNilaiTukar = record
 		nilaiTukar : array [1..400] of nilaiTukar;
 		neff : integer;
+	end;
+	listVoucher = record
+		voucher : array [1..400] of voucher;
+		neff : integer;	
 	end;
 	
 var
@@ -1399,6 +1408,215 @@ Begin
 					lTransfer.Neff:=lTransfer.Neff + 1;
 				end else writeln('> Saldo tidak cukup');
 		end;
+end;
+
+procedure beli(noNasabah : string; var lr : listRekening; lp : listpembelian; lv : listvoucher);
+var
+	jenis, rekbyr, noakun,tgl,notujuan: string;
+	nominal, denda, saldo : real;
+	yy, mm, dd : word;
+	found,find:boolean;
+	urutan, i,b,x,a,j,loc : integer;
+	tabpilihan:array [1..100] of integer;
+	
+begin
+	writeln('> Pilih yang ingin dibeli ');
+	writeln('> 1. Voucher HP ');
+	writeln('> 2. Listrik ');
+	writeln('> 3. Taksi online ');
+
+	found:=false;
+	writeln('> Pembelian');
+	repeat
+		write('> Masukkan nomor akun yang ingin digunakan : ');
+		readln(noakun);
+		for i:= 1 to lr.neff do
+			begin
+			if (noakun = lr.rekening[i].nomorAkun) and jatuhTempo(lr.rekening[i]) then
+			begin
+				urutan:= i;
+				found:= true;
+			end;
+		end;
+		if (found = false) then writeln('> Nomor rekening tidak valid atau belum jatuh tempo, harap coba akun lain.');
+	until (found = true);
+	writeln('> Pilih yang ingin dibeli ');
+	writeln('> 1. Voucher HP ');
+	writeln('> 2. Listrik ');
+	writeln('> 3. Taksi online ');
+	write('> Yang ingin dibeli : ');
+	readln(x);
+	while (x<1) or (x>3) do begin
+		writeln ('> Masukan angka 1, 2, atau 3');
+		write ('> Yang ingin dibeli : ');
+		readln (x);
+	end;
+	if (x=1) then begin
+		writeln('> Pilih penyedia :');
+		a:=0;
+		j:= 1;
+		find:= false;
+		for i:=1 to lv.neff do begin
+			if (lv.voucher[i].jenisbarang = 'voucherhp') then begin
+			a:=a+1;
+			TabPilihan[a]:= i;
+			writeln('> ',a,'. ',lv.voucher[i].penyedia,'/ Harga : ' ,lv.voucher[i].harga);
+			end;
+		end;
+		write('> Pilih yang ingin dibeli :');
+		readln(b);
+		while (find = false) do
+		begin
+			if (b = j) then
+			begin
+				loc:= TabPilihan[j];
+				find:= true;
+			end else
+			begin
+				j:= j+1;
+			end;
+		end;
+		if (lv.voucher[i].harga>=lr.rekening[urutan].saldo) then begin
+			write('> Masukkan nomor tujuan : ');
+			readln(notujuan);
+			if lr.rekening[urutan].mataUang = 'USD' then begin
+				saldo:=lr.rekening[urutan].saldo*13300;
+			end else if lr.rekening[urutan].mataUang = 'EUR' then begin
+				saldo:=lr.rekening[urutan].saldo / 0.94 * 13300;
+			end;
+			decodedate(date,yy,mm,dd);
+			tgl:=datetostr(date);
+			lp.neff:= lp.neff + 1;
+			lp.pembelian[lp.neff].nomorAkun:= noAkun;
+			lp.pembelian[lp.neff].jenisBarang:= lv.voucher[loc].jenisBarang;
+			lp.pembelian[lp.neff].penyedia:= lv.voucher[loc].penyedia;
+			lp.pembelian[lp.neff].nomorTujuan:=notujuan;
+			lp.pembelian[lp.neff].mataUAng:= lr.rekening[urutan].mataUang;
+			lp.pembelian[lp.neff].jumlah:=lv.voucher[loc].harga;
+			lp.pembelian[lp.neff].saldo:=lr.rekening[urutan].saldo;
+			lp.pembelian[lp.neff].tanggalTransaksi:=tgl;
+			writeln('> Pembelian telah berhasil');
+			writeln('> Nomor akun : ',lp.pembelian[lp.neff].nomorAkun);
+			writeln('> Jenis transaksi : ',lp.pembelian[lp.neff].jenisbarang);
+			writeln('> Rekening pembayaran : ',lp.pembelian[lp.neff].nomortujuan);
+			writeln('> Mata uang : ',lp.pembelian[lp.neff].mataUang);
+			writeln('> Jumlah dengan denda jika ada : ',lp.pembelian[lp.neff].jumlah:5:2);
+			writeln('> Saldo akhir : ',lp.pembelian[lp.neff].saldo:5:2);
+			writeln('> Tangga transaksi : ',lp.pembelian[lp.neff].tanggalTransaksi);
+		end else begin
+			writeln('> Transaksi tidak dapat dilanjutkan, saldo anda tidak cukup untuk melakukan pembelian');
+		end;
+	end else if (x=2) then begin
+		writeln('> Pilih penyedia :');
+		a:=0;
+		j:= 1;
+		find:= false;
+		for i:=1 to lv.neff do begin
+			if (lv.voucher[i].jenisbarang = 'listrik') then begin
+			a:=a+1;
+			TabPilihan[a]:= i;
+			writeln('> ',a,'. ',lv.voucher[i].penyedia,'/ Harga : ' ,lv.voucher[i].harga);
+			end;
+		end;
+		write('> Pilih yang ingin dibeli :');
+		readln(b);
+		while (find = false) do
+		begin
+			if (b = j) then
+			begin
+				loc:= TabPilihan[j];
+				find:= true;
+			end else
+			begin
+				j:= j+1;
+			end;
+		end;
+		if (lv.voucher[i].harga>=lr.rekening[urutan].saldo) then begin
+			write('> Masukkan nomor tujuan : ');
+			readln(notujuan);
+			if lr.rekening[urutan].mataUang = 'USD' then begin
+				saldo:=lr.rekening[urutan].saldo*13300;
+			end else if lr.rekening[urutan].mataUang = 'EUR' then begin
+				saldo:=lr.rekening[urutan].saldo / 0.94 * 13300;
+			end;
+			decodedate(date,yy,mm,dd);
+			tgl:=datetostr(date);
+			lp.neff:= lp.neff + 1;
+			lp.pembelian[lp.neff].nomorAkun:= noAkun;
+			lp.pembelian[lp.neff].jenisBarang:= lv.voucher[loc].jenisBarang;
+			lp.pembelian[lp.neff].penyedia:= lv.voucher[loc].penyedia;
+			lp.pembelian[lp.neff].nomorTujuan:=notujuan;
+			lp.pembelian[lp.neff].mataUAng:= lr.rekening[urutan].mataUang;
+			lp.pembelian[lp.neff].jumlah:=lv.voucher[loc].harga;
+			lp.pembelian[lp.neff].saldo:=lr.rekening[urutan].saldo;
+			lp.pembelian[lp.neff].tanggalTransaksi:=tgl;
+			writeln('> Pembelian telah berhasil');
+			writeln('> Nomor akun : ',lp.pembelian[lp.neff].nomorAkun);
+			writeln('> Jenis transaksi : ',lp.pembelian[lp.neff].jenisbarang);
+			writeln('> Rekening pembayaran : ',lp.pembelian[lp.neff].nomortujuan);
+			writeln('> Mata uang : ',lp.pembelian[lp.neff].mataUang);
+			writeln('> Jumlah dengan denda jika ada : ',lp.pembelian[lp.neff].jumlah:5:2);
+			writeln('> Saldo akhir : ',lp.pembelian[lp.neff].saldo:5:2);
+			writeln('> Tangga transaksi : ',lp.pembelian[lp.neff].tanggalTransaksi);
+		end else begin
+			writeln('> Transaksi tidak dapat dilanjutkan, saldo anda tidak cukup untuk melakukan pembelian');
+		end;
+	end else if (x=3) then begin
+		writeln('> Pilih penyedia :');
+		a:=0;
+		j:= 1;
+		find:= false;
+		for i:=1 to lv.neff do begin
+			if (lv.voucher[i].jenisbarang = 'ojekonline') then begin
+			a:=a+1;
+			TabPilihan[a]:= i;
+			writeln('> ',a,'. ',lv.voucher[i].penyedia,'/ Harga : ' ,lv.voucher[i].harga);
+			end;
+		end;
+		write('> Pilih yang ingin dibeli :');
+		readln(b);
+		while (find = false) do
+		begin
+			if (b = j) then
+			begin
+				loc:= TabPilihan[j];
+				find:= true;
+			end else
+			begin
+				j:= j+1;
+			end;
+		end;
+		if (lv.voucher[i].harga>=lr.rekening[urutan].saldo) then begin
+			write('> Masukkan nomor tujuan : ');
+			readln(notujuan);
+			if lr.rekening[urutan].mataUang = 'USD' then begin
+				saldo:=lr.rekening[urutan].saldo*13300;
+			end else if lr.rekening[urutan].mataUang = 'EUR' then begin
+				saldo:=lr.rekening[urutan].saldo / 0.94 * 13300;
+			end;
+			decodedate(date,yy,mm,dd);
+			tgl:=datetostr(date);
+			lp.neff:= lp.neff + 1;
+			lp.pembelian[lp.neff].nomorAkun:= noAkun;
+			lp.pembelian[lp.neff].jenisBarang:= lv.voucher[loc].jenisBarang;
+			lp.pembelian[lp.neff].penyedia:= lv.voucher[loc].penyedia;
+			lp.pembelian[lp.neff].nomorTujuan:=notujuan;
+			lp.pembelian[lp.neff].mataUAng:= lr.rekening[urutan].mataUang;
+			lp.pembelian[lp.neff].jumlah:=lv.voucher[loc].harga;
+			lp.pembelian[lp.neff].saldo:=lr.rekening[urutan].saldo;
+			lp.pembelian[lp.neff].tanggalTransaksi:=tgl;
+			writeln('> Pembelian telah berhasil');
+			writeln('> Nomor akun : ',lp.pembelian[lp.neff].nomorAkun);
+			writeln('> Jenis transaksi : ',lp.pembelian[lp.neff].jenisbarang);
+			writeln('> Rekening pembayaran : ',lp.pembelian[lp.neff].nomortujuan);
+			writeln('> Mata uang : ',lp.pembelian[lp.neff].mataUang);
+			writeln('> Jumlah dengan denda jika ada : ',lp.pembelian[lp.neff].jumlah:5:2);
+			writeln('> Saldo akhir : ',lp.pembelian[lp.neff].saldo:5:2);
+			writeln('> Tangga transaksi : ',lp.pembelian[lp.neff].tanggalTransaksi);
+		end else begin
+			writeln('> Transaksi tidak dapat dilanjutkan, saldo anda tidak cukup untuk melakukan pembelian');
+		end;		
+	end;
 end;
 
 procedure bayar(noNasabah : string; lr : listRekening; var lbyr : listPembayaran);
