@@ -98,29 +98,30 @@ type
 	end;
 	
 var
-	fNasabah : file of  nasabah;
-	varNasabah : nasabah;
-	fRekening : file of  rekening;
-	varRekening : rekening;
-	fSetoran : file of setoran;
-	varSetoran : setoran;
-	fTranfer : file of transfer;
-	varTransfer : transfer;
-	fPembayaran : file of pembayaran;
-	varPembayaran : pembayaran;
-	fPembelian : file of pembelian;
-	varPembelian : pembelian;
-	fNilaiTukar : file of nilaiTukar;
-	varNilaiTukar : nilaiTukar;
-	lNasabah : listNasabah;
-	lRekening : listRekening;
-	lSetoran : listSetoran;
-	lTransfer : listTransfer;
-	lPembayaran : listPembayaran;
-	lPembelian : listPembelian;
-	lNilaiTukar : listNilaiTukar;
-	noNasabah : string;
-	urutanNasabah : integer;
+	fNasabah 	: file of  nasabah;
+	varNasabah 	: nasabah;
+	fRekening 	: file of  rekening;
+	varRekening 	: rekening;
+	fSetoran 	: file of setoran;
+	varSetoran 	: setoran;
+	fTranfer 	: file of transfer;
+	varTransfer 	: transfer;
+	fPembayaran 	: file of pembayaran;
+	varPembayaran 	: pembayaran;
+	fPembelian 	: file of pembelian;
+	varPembelian 	: pembelian;
+	fNilaiTukar 	: file of nilaiTukar;
+	varNilaiTukar 	: nilaiTukar;
+	lNasabah 	: listNasabah;
+	lRekening 	: listRekening;
+	lSetoran 	: listSetoran;
+	lTransfer 	: listTransfer;
+	lPembayaran 	: listPembayaran;
+	lPembelian 	: listPembelian;
+	lNilaiTukar 	: listNilaiTukar;
+	noNasabah	: string;
+	urutanNasabah 	: integer;
+	chs		: integer
 
 function jatuhtempo(R : Rekening):Boolean;
 {Mencari tahu apakah akun sudah jatuh tempo atau belum}
@@ -1276,4 +1277,6 @@ end;
 begin
 	menu; 
 	login(lNasabah,NoNasabah);
+	tulismenu;
+	readln(
 end.
