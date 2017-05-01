@@ -121,7 +121,7 @@ var
 	lNilaiTukar 	: listNilaiTukar;
 	noNasabah	: string;
 	urutanNasabah 	: integer;
-	chs		: integer
+	chs		: integer;
 
 function jatuhtempo(R : Rekening):Boolean;
 {Mencari tahu apakah akun sudah jatuh tempo atau belum}
@@ -1277,7 +1277,7 @@ Begin
 		end;
 		if Loc=0 then writeln('> Rekening tidak ada')
 		until (Loc >0);
-		if (not(JatuhTempo(lRek.Rekening[Loc])) and (lRek.Rekening[Loc].jenisRek<>'tabungan mandiri')) then //JatuhTempo parameternya mungkin belom bener
+		if (not(JatuhTempo(lRek.Rekening[Loc])) and (lRek.Rekening[Loc].jenisRekening<>'tabungan mandiri')) then //JatuhTempo parameternya mungkin belom bener
 			Begin
 				writeln('> Rekening belum jatuh tempo');
 				i:=0;
@@ -1315,20 +1315,20 @@ Begin
 	nPengirim:=0;
 	repeat
 	Begin
-		write('Jenis tabungan yang ingin dipakai: ');
+		write('> Jenis tabungan yang ingin dipakai: ');
 		readln(Jenis);
 		for i:=1 to 100 do
 		Begin
 			if ((User = lRekening.Rekening[i].nomorNasabah) and (Jenis = lRekening.Rekening[i].jenisrekening))  then
 				nPengirim:=i;
 		end;
-		if nPengirim=0 then writeln('Tabungan tidak ditemukan');
+		if nPengirim=0 then writeln('> Tabungan tidak ditemukan');
 	end;
 	until nPengirim >0;
 	nPenerima:=0;
-	write('Masukkan rekening tujuan transfer: ');
+	write('> Masukkan rekening tujuan transfer: ');
 	readln(Tujuan);
-	write('Jenis rekening tujuan: ');
+	write('> Jenis rekening tujuan: ');
 	readln(Jenis);
 	for i:=1 to 100 do
 	Begin
@@ -1338,14 +1338,14 @@ Begin
 	if nPenerima = 0 then 
 		begin
 			antarBank:=True;
-			write('masukkan nama bank luar: '); readln(bankLuar);
+			write('> Masukkan nama bank luar: '); readln(bankLuar);
 	end;
 	if nPenerima = 0 then
 		Begin
-			write('Masukkan mata uang penerima: ');
+			write('> Masukkan mata uang penerima: ');
 			readln(uangPenerima);
 		end else uangPenerima := lRekening.Rekening[nPenerima].mataUang;
-	write('Jumlah yang ingin ditransfer: ');
+	write('> Jumlah yang ingin ditransfer: ');
 	readln(trans);
 		for i:=1 to 400 do
 		Begin
@@ -1380,8 +1380,8 @@ Begin
 					lTransfer.transfer[lTransfer.Neff].saldo:= lRekening.Rekening[nPengirim].saldo;
 					lTransfer.transfer[lTransfer.Neff].tanggalTransaksi:= datetostr(Date);
 					lTransfer.Neff:=lTransfer.Neff + 1;
-				end else writeln('Saldo tidak cukup');
-		end else writeln('Rekening belum jatuh tempo');
+				end else writeln('> Saldo tidak cukup');
+		end else writeln('> Rekening belum jatuh tempo');
 	end else 
 		if lRekening.Rekening[nPengirim].saldo >= trans then
 				begin
@@ -1397,14 +1397,14 @@ Begin
 					lTransfer.transfer[lTransfer.Neff].saldo:= lRekening.Rekening[nPengirim].saldo;
 					lTransfer.transfer[lTransfer.Neff].tanggalTransaksi:= datetostr(Date);
 					lTransfer.Neff:=lTransfer.Neff + 1;
-				end else writeln('Saldo tidak cukup');
+				end else writeln('> Saldo tidak cukup');
 		end;
 end;
 
 procedure bayar(noNasabah : string; lr : listRekening; var lbyr : listPembayaran);
 var
 	jenis, rekbyr, noakun,tgl: string;
-	nominal, denda, saldo : longint;
+	nominal, denda, saldo : real;
 	yy, mm, dd : word;
 	found:boolean;
 	urutan, i,b : integer;
@@ -1440,7 +1440,7 @@ begin
 		begin
 			saldo:=lr.rekening[urutan].saldo / 0.94 * 13300;
 		end;
-		decode(date,yy,mm,dd);
+		decodedate(date,yy,mm,dd);
 		denda:=0;
 		if (dd>=15) then
 		begin
@@ -1497,11 +1497,11 @@ begin
 	login(lNasabah,NoNasabah);
 	tulismenu;
 	writeln('> Masukkan pilihan : ');
-	readln(chs)
+	readln(chs);
 	while (chs<1) or (chs>13) do
 	begin
 		writeln('> Ulangi masukkan pilihan : ');
-		readln(chs)	
+		readln(chs);	
 	end;
 	case chs of
 	1 : begin
@@ -1541,6 +1541,7 @@ begin
 		penambahanAutoDebet(NoNasabah, lRekening);
 	     end;
 	13 : begin
-		exitProgram (lNasabah, lRekening, lSetoran, lTransfer, lPembayaran ,lPembelian, ltNilaiTukar);
-	     end;	    
+		exitProgram (lNasabah, lRekening, lSetoran, lTransfer, lPembayaran ,lPembelian, lNilaiTukar);
+	     end;
+	end;
 end.
