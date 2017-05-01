@@ -4,9 +4,9 @@ uses sysutils;
 
 type
 	nilaiTukar = record
-		nilaiKursAsal : longint;
+		nilaiKursAsal : real;
 		kursAsal : string;
-		nilaiKursTujuan : longint;
+		nilaiKursTujuan : real;
 		kursTujuan : string;
 	end;
 	pembelian = record
@@ -15,7 +15,7 @@ type
 		penyedia : string;
 		nomorTujuan : string;
 		mataUang : string;
-		jumlah : longint;
+		jumlah : reaal;
 		saldo : string;
 		tanggalTransaksi : string; 
 	end;
@@ -24,8 +24,8 @@ type
 		jenisTransaksi : string;
 		rekeningBayar : string;
 		mataUang :string;
-		jumlah : longint;
-		saldo : longint;
+		jumlah : real;
+		saldo : real;
 		tanggalTransaksi : string;
 	end;
 	transfer = record
@@ -34,16 +34,16 @@ type
 		jenisTransfer : string;
 		namaBankLuar : string;
 		mataUang : string;
-		jumlah : longint;  
-		saldo : longint;  
+		jumlah : real;  
+		saldo : real;  
 		tanggalTransaksi : string ;  
 	end;
 	setoran = record
 		nomorAkun : string;
 		jenisTransaksi : string;
 		mataUang : string;
-		jumlah : longint;
-		saldo : longint; 
+		jumlah : real;
+		saldo : real; 
 		tanggalTransaksi : string;
 	end;
 	rekening = record
@@ -51,8 +51,8 @@ type
 		nomorNasabah : string;
 		jenisrekening : string;
 		mataUang : string;
-		saldo : longint;
-		setoranRutin : longint;
+		saldo : real;
+		setoranRutin : real;
 		rekeningAutodebet : string;
 		jangkaWaktu : string; 
 		tanggalMulai : string; 
@@ -403,7 +403,7 @@ begin
 	end;
 end;
 
-Procedure lihatRekening(X : listRekening);
+Procedure lihatRekening(noNasabah:string; X : listRekening);
 var
 	jumlahRek, i : integer;
 begin
@@ -476,7 +476,7 @@ end;
 
 Procedure setor(var X : listRekening; Y : listSetoran);
 var
-	nominal : longint;
+	nominal : real;
 	akun : string;
 	num, i, new, place : integer;
 	found : boolean;
@@ -595,7 +595,7 @@ begin
 	kosong:= 0;
 	if (A.neff > 0) then
 	begin
-		writeln('> Transaksi setoran/penyetoran ; ');
+		writeln('> Transaksi setoran/penyetoran : ');
 		for i:= 1 to A.neff do
 		begin
 			tglTransaksi:= StrToDate(A.setoran[i].tanggalTransaksi);
@@ -603,8 +603,8 @@ begin
 			begin
 				writeln('> Jenis transaksi : ', A.setoran[i].jenisTransaksi);
 				writeln('> Mata uang : ', A.setoran[i].mataUang);
-				writeln('> Jumlah ',  A.setoran[i].jenisTransaksi, ' : ', A.setoran[i].jumlah);
-				writeln('> Saldo akhir : ', A.setoran[i].saldo);
+				writeln('> Jumlah :',  A.setoran[i].jenisTransaksi, ' : ', A.setoran[i].jumlah:0:2);
+				writeln('> Saldo akhir : ', A.setoran[i].saldo:0:2);
 				writeln('> Tanggal transaksi : ', A.setoran[i].tanggalTransaksi);
 				writeln;
 			end;
@@ -622,8 +622,8 @@ begin
 				writeln('> Jenis transfer : ', B.transfer[i].jenisTransfer);
 				writeln('> Bank tujuan : ', B.transfer[i].namaBankLuar);
 				writeln('> Mata uang : ', B.transfer[i].mataUang);
-				writeln('> Jumlah : ', B.transfer[i].jumlah);
-				writeln('> Saldo akhir : ', B.transfer[i].saldo);
+				writeln('> Jumlah : ', B.transfer[i].jumlah:0:2);
+				writeln('> Saldo akhir : ', B.transfer[i].saldo:0:2);
 				writeln('> Tanggal transaksi : ', B.transfer[i].tanggalTransaksi);
 				writeln;
 			end;
@@ -640,8 +640,8 @@ begin
 				writeln('> Jenis Transaksi : ', C.pembayaran[i].jenisTransaksi);
 				writeln('> Rekening bayar : ', C.pembayaran[i].rekeningBayar);
 				writeln('> Mata uang : ', C.pembayaran[i].mataUang);
-				writeln('> Jumlah : ', C.pembayaran[i].jumlah);
-				writeln('> Saldo Akhir : ', C.pembayaran[i].saldo);
+				writeln('> Jumlah : ', C.pembayaran[i].jumlah:0:2);
+				writeln('> Saldo Akhir : ', C.pembayaran[i].saldo:0:2);
 				writeln('> Tanggal transaksi : ', C.pembayaran[i].tanggalTransaksi);
 				writeln;
 			end;
@@ -659,8 +659,8 @@ begin
 				writeln('> Penyedia : ', D.pembelian[i].penyedia);
 				writeln('> Nomor Tujuan : ', D.pembelian[i].nomorTujuan);
 				writeln('> Mata uang : ', D.pembelian[i].mataUang);
-				writeln('> Jumlah : ', D.pembelian[i].jumlah);
-				writeln('> Saldo Akhir : ', D.pembelian[i].saldo);
+				writeln('> Jumlah : ', D.pembelian[i].jumlah:0:2);
+				writeln('> Saldo Akhir : ', D.pembelian[i].saldo:0:2);
 				writeln('> Tanggal transaksi : ', D.pembelian[i].tanggalTransaksi);
 			end;
 		end;
