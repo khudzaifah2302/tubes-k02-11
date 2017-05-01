@@ -1047,7 +1047,7 @@ begin
 	close(fnt);
 end;
 
-Procedure TransferUang(var User:string);
+Procedure TransferUang(User:string);
 var	
 	Jenis,bankLuar,Tujuan,uangPenerima : string;
 	Trans: real;
