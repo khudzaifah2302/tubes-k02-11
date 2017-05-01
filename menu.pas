@@ -1771,42 +1771,54 @@ begin
 	case chs of
 	1 : begin
 		lihatRekening(NoNasabah, lRekening);
+		login(lNasabah, NoNasabah);
 	    end;
 	2 : begin
 		InformasiSaldo (lRekening);
+		login(lNasabah, NoNasabah);
 	    end;
 	3 : begin
 		lihatAktivitasTransaksi(NoNasabah, lRekening, lSetoran, lTransfer, lPembayaran, lPembelian);
+		login(lNasabah, NoNasabah);
 	    end;
 	4 : begin
 		buatRekening(NoNasabah, lRekening);
+		login(lNasabah, NoNasabah);
 	    end;
 	5 : begin
 		setor(NoNasabah, lRekening, lSetoran);
+		login(lNasabah, NoNasabah);
 	    end;
 	6 : begin
 		penarikan(NoNasabah, lRekening, lSetoran);
+		login(lNasabah, NoNasabah);
 	    end;
 	7 : begin
 		TransferUang(NoNasabah, lRekening);
+		login(lNasabah, NoNasabah);
 	    end;
 	8 : begin
 		bayar(NoNasabah, lRekening, lPembayaran);
+		login(lNasabah, NoNasabah);
 	    end;
 	9 : begin
 		beli(noNasabah, lRekening, lpembelian, lvoucher);
+		login(lNasabah, NoNasabah);
 	    end;
 	10 : begin
 		tutupRekening(NoNasabah, lRekening);
+		login(lNasabah, NoNasabah);
 	     end;
 	11 : begin
 		perubahanDataNasabah(NoNasabah,lNasabah);
+		login(lNasabah, NoNasabah);
 	     end;
 	12 : begin
 		penambahanAutoDebet(NoNasabah, lRekening);
+		login(lNasabah, NoNasabah);
 	     end;
 	13 : begin
 		exitProgram (lNasabah, lRekening, lSetoran, lTransfer, lPembayaran ,lPembelian, lNilaiTukar, lvoucher);
-	     end;
+		login(lNasabah, NoNasabah);
 	end;
 end.
