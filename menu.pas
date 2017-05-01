@@ -419,7 +419,7 @@ begin
 					assign(fn,namaFile);
 					reset(fn);
 					ln.neff := 0;
-					while (not eof(fn)) and (i>=201) do
+					while (not eof(fn)) and (i<=201) do
 					begin
 						read(fn,n);
 						ln.nasabah[i] := n;
@@ -438,7 +438,7 @@ begin
 					readln(namaFile);
 					assign(fr,namaFile);
 					reset(fr);
-					while (not eof(fr)) and (i>=201) do
+					while (not eof(fr)) and (i<=201) do
 					begin
 						read(fr,r);
 						lr.rekening[i] := r;
@@ -457,7 +457,7 @@ begin
 					assign(fs,namaFile);
 					ls.neff := 0;
 					reset(fs);
-					while (not eof(fs)) and (i>=401) do
+					while (not eof(fs)) and (i<=401) do
 					begin
 						read(fs,s);
 						ls.setoran[i] := s;
@@ -476,7 +476,7 @@ begin
 					assign(ft,namaFile);
 					lt.neff := 0;
 					reset(ft);
-					while (not eof(ft)) and (i>=401) do
+					while (not eof(ft)) and (i<=401) do
 					begin
 						read(ft,t);
 						lt.transfer[i] := t;
@@ -495,7 +495,7 @@ begin
 					assign(fbyr,namaFile);
 					lbyr.neff := 0;
 					reset(fbyr);
-					while (not eof(fbyr)) and (i>=401) do
+					while (not eof(fbyr)) and (i<=401) do
 					begin
 						read(fbyr,byr);
 						lbyr.pembayaran[i] := byr;
@@ -514,7 +514,7 @@ begin
 					assign(fbeli,namaFile);
 					lbeli.neff := 0;
 					reset(fbeli);
-					while (not eof(fbeli)) and (i>=401) do
+					while (not eof(fbeli)) and (i<=401) do
 					begin
 						read(fbeli,beli);
 						lbeli.pembelian[i] := beli;
@@ -533,7 +533,7 @@ begin
 					assign(fnt,namaFile);
 					lnt.neff := 0;
 					reset(fnt);
-					while (not eof(fnt)) and (i>=401) do
+					while (not eof(fnt)) and (i<=401) do
 					begin
 						read(fnt,nt);
 						lnt.nilaiTukar[i] := nt;
@@ -550,7 +550,7 @@ begin
 					readln(namaFile);
 					assign(fv,namaFile);
 					reset(fv);
-					while (not eof(fv)) and (i>=401) do
+					while (not eof(fv)) and (i<=401) do
 					begin
 						read(fv,v);
 						lv.voucher[i] := v;
