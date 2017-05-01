@@ -798,6 +798,141 @@ begin
 	close(fnt);
 end;
 
+Procedure lihatRekening(Y : integer; X : listRekening);
+var
+	jumlahRek, i : integer;
+begin
+	jumlahRek:= 0;
+	writeln('>Daftar Rekening :');
+	for i:= 1 to Neff do
+	begin
+		if (noNasabah = X.rekening[i].nomorNasabah) then
+		begin
+			jumlahRek:= jumlahRek+1;
+			writeln('> ', jumlahRek,'. ', X.rekening[i].jenisrekening,' | No.Akun : ', X.rekening[i].nomorAkun);
+		end;
+	end;
+	if (jumlahRek = 0) then writeln('Anda tidak memiliki rekening');
+end;
+
+Procedure findRekening(n : integer; X : listRekening);
+var
+	i, j : integer;
+begin
+	j:= 0;
+	for i:= 1 to X.neff do
+	begin
+		if (n = 1) then
+		begin
+			if (X.rekening[i].jenisrekening = 'tabungan mandiri') then
+			begin
+				j:= j+1;
+				writeln('> ', j, '. ', X.rekening[i].nomorAkun);
+			end;
+			if (j = 0) then
+			begin
+				writeln('> Anda tidak memiliki tabungan mandiri');
+			end;
+		end
+		else if (n = 2) then
+		begin
+			if (X.rekening[i].jenisrekening = 'deposito') then
+			begin
+				j:= j+1;
+				writeln('> ', j, '. ', X.rekening[i].nomorAkun);
+			end;
+			if (j = 0) then
+			begin
+				writeln('> Anda tidak memiliki deposito');
+			end;
+		end
+		else if (n = 2) then
+		begin
+			if (X.rekening[i].jenisrekening = 'tabungan rencana') then
+			begin
+				j:= j+1;
+				writeln('> ', j, '. ', X.rekening[i].nomorAkun);
+			end;
+			if (j = 0) then
+			begin
+				writeln('> Anda tidak memiliki tabungan mandiri');
+			end;
+		end;
+	end;
+end;
+
+Procedure setor(var X : listRekening; Y : listSetoran);
+var
+	nominal : longint;
+	akun : string;
+	dd, mm, yy : word;
+	num, i, new, place : integer;
+	found : boolean;
+	
+begin
+	writeln ('> Pilih jenis rekening :');
+	writeln ('> 1. Deposito');
+	writeln ('> 2. Tabungan Rencana');
+	writeln ('> 3. Tabungan Mandiri');
+	write ('> Jenis rekening: '); 
+	readln (num);
+	findRekening(num, X);
+	repeat
+		write('> Masukkan nomor Akun tujuan pensetoran : ');
+		readln(akun);
+		for i:= 1 to X.neff do
+			begin
+			if (akun = X.rekening[i].nomorAkun) then
+			begin
+				place:= i;
+				found:= true;
+			end else writeln('> Nomor rekening tidak valid. Harap coba lagi.');
+		end;
+	until (found = true);
+	write('> Masukkan jumlah uang yang ingin Anda setor : ');
+	readln(nominal);
+	while (nominal < 0) do
+	begin
+		writeln('> Nominal tidak valid');
+		write('> Masukkan jumlah uang yang ingin Anda setor : ');
+		readln(nominal);
+	end;
+	X.rekening[place].saldo:= X.rekening[place].saldo + nominal;
+	Y.neff:= Y.neff+1;
+	new:= Y.neff;
+	Y.setoran[new].nomorAkun:= X.rekening[place].nomorAkun;
+	Y.setoran[new].jenisTransaksi:= 'setoran';
+	Y.setoran[new].mataUang:= X.rekening[place].mataUang;
+	Y.setoran[new].jumlah:= nominal;
+	Y.setoran[new].saldo:= X.rekening[place].saldo;
+	DecodeDate(Date, yy, mm, dd);
+	Y.setoran[new].tanggalTransaksi:= DateToStr(Date);
+	writeln('> Transaksi Berhasil');
+end;
+
+Procedure lihatAktifitasTransaksi(X : listRekening; Y : listSetoran; Z : list);
+begin
+	writeln ('> Pilih jenis rekening :');
+	writeln ('> 1. Deposito');
+	writeln ('> 2. Tabungan Rencana');
+	writeln ('> 3. Tabungan Mandiri');
+	write ('> Jenis rekening: '); 
+	readln (num);
+	findRekening(num, X);
+	repeat
+		write('> Masukkan nomor Akun tujuan pensetoran : ');
+		readln(akun);
+		for i:= 1 to X.neff do
+			begin
+			if (akun = X.rekening[i].nomorAkun) then
+			begin
+				place:= i;
+				found:= true;
+			end else writeln('> Nomor rekening tidak valid. Harap coba lagi.');
+		end;
+	until (found = true);
+	writeln('> Masukkan jangka waktu transaksi yang ingin ditampilkan : ');
+end;
 
 procedure menu;
 var
@@ -809,6 +944,7 @@ begin
 	
 	
 end;
+
 {program utama}
 begin
 	menu; 
