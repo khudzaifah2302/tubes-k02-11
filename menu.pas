@@ -240,7 +240,7 @@ begin
 	writeln('> 8. Pembayaran ');
 	writeln('> 9. Pembelian ');
 	writeln('> 10. Penutupan Rekening ');
-	writeln('> 11. Perubahan Data Rekening ');
+	writeln('> 11. Perubahan Data Nasabah ');
 	writeln('> 12. Penambahan/perubahan rekening AutoDebet ');
 	writeln('> 13. exit ');
 end;
@@ -1278,5 +1278,51 @@ begin
 	menu; 
 	login(lNasabah,NoNasabah);
 	tulismenu;
-	readln(
+	writeln('> Masukkan pilihan : ');
+	readln(chs)
+	while (chs<1) or (chs>13) do
+	begin
+		writeln('> Ulangi masukkan pilihan : ');
+		readln(chs)	
+	end;
+	case chs of
+	1 : begin
+		
+	    end;
+	2 : begin
+		
+	    end;
+	3 : begin
+		
+	    end;
+	4 : begin
+		
+	    end;
+	5 : begin
+		
+	    end;
+	6 : begin
+		
+	    end;
+	7 : begin
+		
+	    end;
+	8 : begin
+		
+	    end;
+	9 : begin
+		
+	    end;
+	10 : begin
+		
+	    end;
+	11 : begin
+		
+	    end;
+	12 : begin
+		
+	    end;
+	13 : begin
+		
+	    end;	    
 end.
