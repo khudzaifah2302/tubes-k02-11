@@ -15,8 +15,8 @@ type
 		penyedia : string;
 		nomorTujuan : string;
 		mataUang : string;
-		jumlah : reaal;
-		saldo : string;
+		jumlah : real;
+		saldo : real;
 		tanggalTransaksi : string; 
 	end;
 	pembayaran = record
@@ -893,7 +893,7 @@ var
 	found		: boolean;
 {Algoritma prosedur}
 begin
-	lihatRekening(R);
+	lihatRekening(NoNasabah,R);
 	found := False;
 	repeat
 		write('> Masukkan Nomor Akun yang akan dihapus : ');
