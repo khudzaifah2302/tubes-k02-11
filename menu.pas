@@ -226,9 +226,114 @@ begin
 			end else		
 end;
 
+function findrekening (T2:listRekening; x:integer):boolean;
+var
+	temp 	:string;
+	i		:integer;
+	found 	:boolean;
+begin
+	if (x=1) then begin
+		temp:='deposito'; i:=1;found := false;
+		while (i<= T2.neff) and (not(found)) do begin
+			if (temp = T2.rekening[i].jenisrekening) then 
+				found:= true
+			else i:= i+1;
+		end;
+		findrekening := found;
+	end;
+	if (x=2) then begin
+		temp:='tabungan rencana'; i:=1;found := false;
+		while (i<= T2.neff) and (not(found)) do begin
+			if (temp = T2.rekening[i].jenisrekening) then 
+				found:= true
+			else i:= i+1;
+		end;
+		findrekening := found;
+	end;
+	if (x=3) then begin
+		temp:='tabungan mandiri'; i:=1;found := false;
+		while (i<= T2.neff) and (not(found)) do begin
+			if (temp = T2.rekening[i].jenisrekening) then 
+				found:= true
+			else i:= i+1;
+		end;
+		findrekening := found;	
+	end;
+end;				
+
+procedure InformasiSaldo (T2:listRekening);
+var
+	i	:integer;
+	x	:integer;
+begin
+	writeln ('Pilih jenis rekening :');
+	writeln ('1. Deposito');
+	writeln ('2. Tabungan Rencana');
+	writeln ('3. Tabungan Mandiri');
+	write ('Jenis rekening: '); 
+	readln (x);
+	while (x<1) or (x>3) do begin
+		writeln ('Masukan angka 1, 2, atau 3');
+		write ('Jenis rekening: ');
+		readln (x);
+	end;
+	findrekening (T2,x);
+	if (findrekening (T2,x)) then begin
+		if (x = 1) then begin
+			writeln ('Pilih Rekening Deposito anda ');
+			for i:= 1 to T2.neff do begin
+				writeln (i,'. ',T2.rekening[i].nomorAkun);
+			end;
+			write ('Pilih Rekening Deposito: '); readln(i);
+			writeln ('Nomor Rekening: ', T2.rekening[i].nomorAkun);
+			writeln ('Tanggal Mulai: ',T2.rekening[i].tanggalMulai);
+			writeln ('Mata Uang: ',T2.rekening[i].mataUang);
+			writeln ('Jangka Waktu: ',T2.rekening[i].jangkaWaktu);
+			writeln ('Setoran Rutin: ',T2.rekening[i].setoranRutin);
+			writeln ('Saldo: ',T2.rekening[i].saldo);
+		end;
+		if (x = 2) then begin
+			writeln ('Pilih Rekening Tabungan Rencana anda ');
+			for i:= 1 to T2.neff do begin
+				writeln (i,'. ',T2.rekening[i].nomorAkun);
+			end;
+			write ('Pilih Rekening Tabungan Rencana: '); readln(i);
+			writeln ('Nomor Rekening: ', T2.rekening[i].nomorAkun);
+			writeln ('Tanggal Mulai: ',T2.rekening[i].tanggalMulai);
+			writeln ('Mata Uang: ',T2.rekening[i].mataUang);
+			writeln ('Jangka Waktu: ',T2.rekening[i].jangkaWaktu);
+			writeln ('Setoran Rutin: ',T2.rekening[i].setoranRutin);
+			writeln ('Saldo: ',T2.rekening[i].saldo);
+		end;
+		if (x = 3) then begin
+			writeln ('Pilih Rekening Tabungan Mandiri anda ');
+			for i:= 1 to T2.neff do begin
+				writeln (i,'. ',T2.rekening[i].nomorAkun);
+			end;
+			write ('Pilih Rekening Tabungan Mandiri: '); readln(i);
+			writeln ('Nomor Rekening: ', T2.rekening[i].nomorAkun);
+			writeln ('Tanggal Mulai: ',T2.rekening[i].tanggalMulai);
+			writeln ('Mata Uang: ',T2.rekening[i].mataUang);
+			writeln ('Jangka Waktu: ',T2.rekening[i].jangkaWaktu);
+			writeln ('Setoran Rutin: ',T2.rekening[i].setoranRutin);
+			writeln ('Saldo: ',T2.rekening[i].saldo);
+		end;
+	end else begin	
+		if (x=1) then begin
+			writeln ('Anda tidak mempunyai rekening deposito') ;
+		end;
+		if (x=2) then begin
+			writeln ('Anda tidak mempunyai rekening tabungan rencana') ;
+		end;
+		if (x=3) then begin
+			writeln ('Anda tidak mempunyai rekening tabungan mandiri') ;
+		end;
+	end;
+end;
+
 procedure tulisMenu;
 begin
-	writeln('> menu:');
+	writeln('> Menu:');
 	writeln;
 	writeln('> 1. Lihat Rekening ');
 	writeln('> 2. Informasi Saldo ');
@@ -286,7 +391,7 @@ begin
 					i :=1;
 					writeln('> File nasabah');
 					writeln('> load');
-					write(' nama file : ');
+					write('> nama file : ');
 					readln(namaFile);
 					assign(fn,namaFile);
 					reset(fn);
@@ -306,7 +411,7 @@ begin
 					i :=1;
 					writeln('> File rekening');
 					writeln('> load');
-					write(' nama file : ');
+					write('> nama file : ');
 					readln(namaFile);
 					assign(fr,namaFile);
 					reset(fr);
@@ -324,7 +429,7 @@ begin
 					i :=1;
 					writeln('> File setoran');
 					writeln('> load');
-					write(' nama file : ');
+					write('> nama file : ');
 					readln(namaFile);
 					assign(fs,namaFile);
 					ls.neff := 0;
@@ -343,7 +448,7 @@ begin
 					i :=1;
 					writeln('> File transfer');
 					writeln('> load');
-					write(' nama file : ');
+					write('> nama file : ');
 					readln(namaFile);
 					assign(ft,namaFile);
 					lt.neff := 0;
@@ -362,7 +467,7 @@ begin
 					i :=1;
 					writeln('> File pembayaran');
 					writeln('> load');
-					write(' nama file : ');
+					write('> nama file : ');
 					readln(namaFile);
 					assign(fbyr,namaFile);
 					lbyr.neff := 0;
@@ -381,7 +486,7 @@ begin
 					i :=1;
 					writeln('> File pembelian');
 					writeln('> load');
-					write(' nama file : ');
+					write('> nama file : ');
 					readln(namaFile);
 					assign(fbeli,namaFile);
 					lbeli.neff := 0;
@@ -428,6 +533,7 @@ var i,Loc: integer; //Loc adalah lokasi account pada array, dan i adalah variabl
 	Att: array [1..100] of integer; //Att menyimpan akun mana yang telah gagal login
 	User, Pass: string;
 Begin
+	writeln('> Login');
 	for i:=1 to 100 do //semua account di-set dengan 0 pelanggaran atau gagal login 
 	Att[i]:=0;
 	repeat //proses login diulang sampai berhasil
@@ -474,6 +580,34 @@ Begin
 	until ((Loc>0) and (Found)); //kondisi berhenti untuk repeat
 	Writeln('> Login berhasil!');
 	NoNasabah:=arrayN.nasabah[Loc].NomorNasabah; //value fungsi login sama dengan lokasi user pada array, dan selanjutnya dapat disimpan di currentLocation
+end;
+
+procedure perubahanDataNasabah(NoNasabah: string; ln:ListNasabah); 
+
+var
+	i,Loc : integer;
+	
+Begin
+	writeln('> Perubahan data nasabah');
+	Loc :=0;
+	for i:=1 to (ln.Neff) do
+	begin
+		if (ln.nasabah[Loc].NomorNasabah = NoNasabah) then Loc := i;
+	end;
+	writeln('> Masukkan data yang baru');
+	write('> Nama Nasabah: ');
+	readln(ln.nasabah[Loc].NamaNasabah);
+	write('> Alamat: ');
+	readln(ln.nasabah[Loc].alamat);
+	write('> Kota: ');
+	readln(ln.nasabah[Loc].kota);
+	write('> E-mail: ');
+	readln(ln.nasabah[Loc].email);
+	write('> Nomor Telepon: ');
+	readln(ln.nasabah[Loc].NomorTelp);
+	write('> Password: ');
+	readln(ln.nasabah[Loc].Password);
+	ln.nasabah[Loc].status :='aktif';
 end;
 
 Procedure lihatRekening(noNasabah:string; X : listRekening);
@@ -555,6 +689,7 @@ var
 	found : boolean;
 	
 begin
+	writeln ('> Penyetoran');
 	writeln ('> Pilih jenis rekening :');
 	writeln ('> 1. Deposito');
 	writeln ('> 2. Tabungan Rencana');
@@ -625,6 +760,7 @@ var
 	
 {ALGORITMA}
 begin
+	writeln('> Lihat Aktivitas Transaksi');
 	writeln ('> Pilih jenis rekening :');
 	writeln ('> 1. Deposito');
 	writeln ('> 2. Tabungan Rencana');
@@ -633,7 +769,7 @@ begin
 	readln (num);
 	pilihanRekening(num, X);
 	repeat
-		write('> Masukkan nomor Akun tujuan pensetoran : ');
+		write('> Masukkan nomor Akun : ');
 		readln(akun);
 		for i:= 1 to X.neff do
 			begin
@@ -743,11 +879,12 @@ end;
 
 procedure penambahanAutoDebet(noNasabah : string; var  lr : listRekening);
 var
-	found1, found2 : boolean;
-	nomandiri, noauto,lna, jenis : string;
-	i,b : integer;
+	found1, found2 			: boolean;
+	nomandiri, noauto,lna, jenis 	: string;
+	i,b 				: integer;
 	
 begin
+	writeln('> Penambahan/perubahan Autodebet');
 	found1 := false;
 	found2 := false;
 	writeln('> tuliskan nomor rekening yang mau diberi/diubah autodebetnya : ');
@@ -782,13 +919,12 @@ end;
 
 procedure buatRekening(NoNasabah : string; var R : ListRekening);
 
-{Kamus lokal}
 var	
-	chs,n,jw		: integer;
-	saldo,setoran	: longint;
-	rekAuto			: string;
-	i				: integer;
-{Algoritma Prosedur}
+	chs,n,jw	: integer;
+	saldo,setoran	: real;
+	rekAuto		: string;
+	i		: integer;
+
 begin
 writeln('> Buat Rekening');
 repeat 
@@ -966,6 +1102,7 @@ var
 	found		: boolean;
 {Algoritma prosedur}
 begin
+	writeln('> Tutup Rekening');
 	lihatRekening(NoNasabah,R);
 	found := False;
 	repeat
@@ -1171,6 +1308,7 @@ var
 	i, indeks, indeks2, nPenerima,nPengirim: integer;
 	antarBank,Cukup : boolean;
 Begin
+	writeln('> Transfer uang');
 	bankLuar:='---';
 	antarBank:=false;
 	Cukup:=false;
@@ -1263,12 +1401,92 @@ Begin
 		end;
 end;
 
+procedure bayar(noNasabah : string; lr : listRekening; var lbyr : listPembayaran);
+var
+	jenis, rekbyr, noakun,tgl: string;
+	nominal, denda, saldo : longint;
+	yy, mm, dd : word;
+	found:boolean;
+	urutan, i,b : integer;
+begin
+	found:=false;
+	writeln('> Pembayaran');
+	repeat
+		write('> Masukkan nomor Akun tujuan pensetoran : ');
+		readln(noakun);
+		for i:= 1 to lr.neff do
+			begin
+			if (noakun = lr.rekening[i].nomorAkun) and jatuhTempo(lr.rekening[i]) then
+			begin
+				urutan:= i;
+				found:= true;
+			end;
+		end;
+		if (found = false) then writeln('> Nomor rekening tidak valid atau belum jatuh tempo. Harap coba lagi.');
+	until (found = true);
+	write('> Tulikan pembayaran yang mau dilakukan : ');
+	readln(jenis);
+	write('> Tuliskan nominal pembayaran : ');
+	readln(nominal);
+	write('> Tuliskan rekening bayar : ');
+	readln(rekbyr);
+	if (jenis='listrik') or (jenis='PDAM') or (jenis='telepon') or (jenis='kartu kredit') or (jenis='pajak') or (jenis='biaya pendidikan') then
+	begin
+		if lr.rekening[urutan].mataUang = 'USD' then
+		begin
+			saldo:=lr.rekening[urutan].saldo*13300;
+		end
+		else if lr.rekening[urutan].mataUang = 'EUR' then
+		begin
+			saldo:=lr.rekening[urutan].saldo / 0.94 * 13300;
+		end;
+		decode(date,yy,mm,dd);
+		denda:=0;
+		if (dd>=15) then
+		begin
+			denda:=(dd-14)*10000;
+		end;
+		nominal:=nominal+denda;
+		if (saldo>=nominal) then
+		begin
+			saldo:= saldo-nominal;
+			if lr.rekening[urutan].mataUang = 'USD' then
+				lr.rekening[urutan].saldo := saldo / 13300
+			else if lr.rekening[urutan].mataUang = 'EUR' then
+				lr.rekening[urutan].saldo := saldo / 13300 * 0.94
+			else
+				lr.rekening[urutan].saldo := saldo;
+			b:= lbyr.neff+1;
+			lbyr.pembayaran[b].nomorAkun := lr.rekening[urutan].nomorAkun;
+			lbyr.pembayaran[b].jenistransaksi := jenis;
+			lbyr.pembayaran[b].rekeningBayar := rekbyr;
+			lbyr.pembayaran[b].mataUang := lr.rekening[urutan].mataUang;
+			lbyr.pembayaran[b].jumlah := nominal;
+			lbyr.pembayaran[b].saldo := lr.rekening[urutan].saldo;
+			tgl:=datetostr(date);
+			lbyr.pembayaran[b].tanggalTransaksi := tgl;
+			writeln('> pembayarn telah berhasil');
+			writeln('> nomor akun : ',lbyr.pembayaran[b].nomorAkun);
+			writeln('> jenis transaksi : ',lbyr.pembayaran[b].jenistransaksi);
+			writeln('> rekening pembayaran : ',lbyr.pembayaran[b].rekeningBayar);
+			writeln('> mata uang : ',lbyr.pembayaran[b].mataUang);
+			writeln('> jumlah dengan denda jika ada : ',lbyr.pembayaran[b].jumlah:5:2);
+			writeln('> saldo akhir : ',lbyr.pembayaran[b].saldo:5:2);
+			writeln('> tangga transaksi : ',lbyr.pembayaran[b].tanggalTransaksi);
+		end
+		else
+			writeln('> saldo anda tidak mencukupi.');
+	end
+	else
+		writeln('> Masukan anda salah');
+end;
+
 procedure menu;
 var
 	loop : boolean;
 	a : integer;
 begin
-	writeln('> program perbankan');
+	writeln('> Program perbankan');
 	load(lNasabah,lRekening,lSetoran,lTransfer,lPembayaran,lPembelian,lNilaiTukar);
 	
 	
@@ -1287,42 +1505,42 @@ begin
 	end;
 	case chs of
 	1 : begin
-		
+		lihatRekening(NoNasabah, lRekening);
 	    end;
 	2 : begin
-		
+		InformasiSaldo (lRekening);
 	    end;
 	3 : begin
-		
+		lihatAktifitasTransaksi(lRekening, lSetoran, lTransfer, lPembayaran, lPembelian);
 	    end;
 	4 : begin
-		
+		buatRekening(NoNasabah, lRekening);
 	    end;
 	5 : begin
-		
+		setor(lRekening, lSetoran);
 	    end;
 	6 : begin
-		
+		penarikan(NoNasabah, lRekening, lSetoran);
 	    end;
 	7 : begin
-		
+		TransferUang(NoNasabah, lRekening);
 	    end;
 	8 : begin
-		
+		bayar(NoNasabah, lRekening, lPembayaran);
 	    end;
 	9 : begin
 		
 	    end;
 	10 : begin
-		
-	    end;
+		tutupRekening(NoNasabah, lRekening);
+	     end;
 	11 : begin
-		
-	    end;
+		perubahanDataNasabah(NoNasabah,lNasabah);
+	     end;
 	12 : begin
-		
-	    end;
+		penambahanAutoDebet(NoNasabah, lRekening);
+	     end;
 	13 : begin
-		
-	    end;	    
+		exitProgram (lNasabah, lRekening, lSetoran, lTransfer, lPembayaran ,lPembelian, ltNilaiTukar);
+	     end;	    
 end.
