@@ -1047,6 +1047,104 @@ begin
 	close(fnt);
 end;
 
+Procedure TransferUang(var User:string);
+var	
+	Jenis,bankLuar,Tujuan,uangPenerima : string;
+	Trans: real;
+	i, indeks, indeks2, nPenerima,nPengirim: integer;
+	antarBank,Cukup : boolean;
+Begin
+	bankLuar:='---';
+	antarBank:=false;
+	Cukup:=false;
+	nPengirim:=0;
+	repeat
+	Begin
+		write('Jenis tabungan yang ingin dipakai: ');
+		readln(Jenis);
+		for i:=1 to 100 do
+		Begin
+			if ((User = lRekening.Rekening[i].nomorNasabah) and (Jenis = lRekening.Rekening[i].jenisrekening))  then
+				nPengirim:=i;
+		end;
+		if nPengirim=0 then writeln('Tabungan tidak ditemukan');
+	end;
+	until nPengirim >0;
+	nPenerima:=0;
+	write('Masukkan rekening tujuan transfer: ');
+	readln(Tujuan);
+	write('Jenis rekening tujuan: ');
+	readln(Jenis);
+	for i:=1 to 100 do
+	Begin
+		if ((lRekening.Rekening[i].nomorNasabah = Tujuan) and (lRekening.Rekening[i].jenisrekening = Jenis)) then
+			nPenerima:=i;
+	end;
+	if nPenerima = 0 then 
+		begin
+			antarBank:=True;
+			write('masukkan nama bank luar: '); readln(bankLuar);
+	end;
+	if nPenerima = 0 then
+		Begin
+			write('Masukkan mata uang penerima: ');
+			readln(uangPenerima);
+		end else uangPenerima := lRekening.Rekening[nPenerima].mataUang;
+	write('Jumlah yang ingin ditransfer: ');
+	readln(trans);
+		for i:=1 to 400 do
+		Begin
+			if ((lNilaiTukar.nilaiTukar[i].kursAsal= lRekening.Rekening[nPengirim].mataUang) and (lNilaiTukar.nilaiTukar[i].kursTujuan = uangPenerima)) then
+				indeks:=i;
+		end;
+		if lRekening.Rekening[nPenerima].mataUang <> uangPenerima then
+			trans:= trans + (2 * lNilaiTukar.nilaiTukar[indeks].nilaiKursTujuan / lNilaiTukar.nilaiTukar[indeks].nilaiKursAsal);
+	if antarBank then
+		Begin
+			for i:=1 to 400 do
+			Begin
+				if ((lNilaiTukar.nilaiTukar[i].kursAsal='IDR') and (lNilaiTukar.nilaiTukar[i].kursTujuan=lRekening.Rekening[nPengirim].mataUang)) then
+					indeks2 := i;
+			end;
+		trans:= trans + ((5000 / lNilaiTukar.nilaiTukar[indeks2].nilaiKursAsal) * lNilaiTukar.nilaiTukar[indeks2].nilaiKursTujuan);
+	if lRekening.Rekening[nPengirim].jenisrekening <> 'tabungan mandiri' then
+	begin
+		if JatuhTempo(lRekening.Rekening[nPengirim]) then
+		begin
+			if lRekening.Rekening[nPengirim].saldo >= trans then
+				begin
+					lTransfer.transfer[lTransfer.Neff].nomorAkunAsal:= lRekening.Rekening[nPengirim].nomorAkun;
+					lTransfer.transfer[lTransfer.Neff].nomorakuntujuan:=Tujuan;
+					if antarBank then 
+						lTransfer.transfer[lTransfer.Neff].jenisTransfer:='antar bank'
+					else lTransfer.transfer[lTransfer.Neff].jenisTransfer:='dalam bank';
+					lTransfer.transfer[lTransfer.Neff].namaBankLuar:=bankLuar;
+					lTransfer.transfer[lTransfer.Neff].mataUang:=uangPenerima;
+					lTransfer.transfer[lTransfer.Neff].jumlah:=trans;
+					lRekening.Rekening[nPengirim].saldo:= lRekening.Rekening[nPengirim].saldo - trans;
+					lTransfer.transfer[lTransfer.Neff].saldo:= lRekening.Rekening[nPengirim].saldo;
+					lTransfer.transfer[lTransfer.Neff].tanggalTransaksi:= datetostr(Date);
+					lTransfer.Neff:=lTransfer.Neff + 1;
+				end else writeln('Saldo tidak cukup');
+		end else writeln('Rekening belum jatuh tempo');
+	end else 
+		if lRekening.Rekening[nPengirim].saldo >= trans then
+				begin
+					lTransfer.transfer[lTransfer.Neff].nomorAkunAsal:= lRekening.Rekening[nPengirim].nomorAkun;
+					lTransfer.transfer[lTransfer.Neff].nomorakuntujuan:=Tujuan;
+					if antarBank then 
+						lTransfer.transfer[lTransfer.Neff].jenisTransfer:='antar bank'
+						else lTransfer.transfer[lTransfer.Neff].jenisTransfer:='dalam bank';
+					lTransfer.transfer[lTransfer.Neff].namaBankLuar:=bankLuar;
+					lTransfer.transfer[lTransfer.Neff].mataUang:=uangPenerima;
+					lTransfer.transfer[lTransfer.Neff].jumlah:= trans;
+					lRekening.Rekening[nPengirim].saldo:= lRekening.Rekening[nPengirim].saldo - trans;
+					lTransfer.transfer[lTransfer.Neff].saldo:= lRekening.Rekening[nPengirim].saldo;
+					lTransfer.transfer[lTransfer.Neff].tanggalTransaksi:= datetostr(Date);
+					lTransfer.Neff:=lTransfer.Neff + 1;
+				end else writeln('Saldo tidak cukup');
+		end;
+end;
 
 procedure menu;
 var
