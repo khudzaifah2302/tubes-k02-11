@@ -121,7 +121,7 @@ var
 	lNilaiTukar 	: listNilaiTukar;
 	noNasabah	: string;
 	urutanNasabah 	: integer;
-	chs		: integer
+	chs		: integer;
 
 function jatuhtempo(R : Rekening):Boolean;
 {Mencari tahu apakah akun sudah jatuh tempo atau belum}
@@ -1279,54 +1279,55 @@ begin
 end;
 {program utama}
 begin
+	begin
 	menu; 
 	login(lNasabah,NoNasabah);
 	tulismenu;
 	writeln('> Masukkan pilihan : ');
-	readln(chs)
+	readln(chs);
 	while (chs<1) or (chs>13) do
 	begin
 		writeln('> Ulangi masukkan pilihan : ');
-		readln(chs)	
+		readln(chs);	
 	end;
 	case chs of
 	1 : begin
-		
+		lihatRekening(NoNasabah, lRekening);
 	    end;
 	2 : begin
-		
+		InformasiSaldo (lRekening);
 	    end;
 	3 : begin
-		
+		lihatAktifitasTransaksi(lRekening, lSetoran, lTransfer, lPembayaran, lPembelian);
 	    end;
 	4 : begin
-		
+		buatRekening(NoNasabah, lRekening);
 	    end;
 	5 : begin
-		
+		setor(lRekening, lSetoran);
 	    end;
 	6 : begin
-		
+		penarikan(NoNasabah, lRekening, lSetoran);
 	    end;
 	7 : begin
-		
+		TransferUang(NoNasabah, lRekening);
 	    end;
 	8 : begin
-		
+		bayar(NoNasabah, lRekening, lPembayaran);
 	    end;
 	9 : begin
 		
 	    end;
 	10 : begin
-		
-	    end;
+		tutupRekening(NoNasabah, lRekening);
+	     end;
 	11 : begin
-		
-	    end;
+		perubahanDataNasabah(NoNasabah,lNasabah);
+	     end;
 	12 : begin
-		
-	    end;
+		penambahanAutoDebet(NoNasabah, lRekening);
+	     end;
 	13 : begin
-		
-	    end;	    
+		exitProgram (lNasabah, lRekening, lSetoran, lTransfer, lPembayaran ,lPembelian, lNilaiTukar);
+	     end;
 end.
